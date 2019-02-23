@@ -3,19 +3,18 @@ import { StatusBar } from 'react-native'
 import { AppRegistry } from "react-native";
 
 import { Provider, connect } from 'react-redux'
-import { createStore } from 'redux';
-import reducers from './reducers/index.js';
+import { createStore, applyMiddleware } from 'redux';
+import thunk from 'redux-thunk'
 
+import rootReducer from './reducers/index.js';
 import jwtDecode from 'jwt-decode';
-
-const store = createStore(reducers);
-
-// import { Auth } from 'aws-amplify'
 
 import Tabs from './auth/Tabs'
 import Nav from './nav/Nav'
 
 import { AsyncStorage } from "react-native"
+
+const store = createStore(rootReducer, applyMiddleware(thunk))
 
 class App extends React.Component {
   state = {
@@ -27,15 +26,14 @@ class App extends React.Component {
     StatusBar.setHidden(true)
 
     const userToken = await AsyncStorage.getItem("user_token");
-    if (userToken) this.setState({ user: jwtDecode(userToken), isLoading: false })
+    if (userToken) this.setState({ user: jwtDecode(userToken).user, isLoading: false })
     else this.setState({ isLoading: false })
 
   }
 
   async componentWillReceiveProps(nextProps) {
-
     const userToken = await AsyncStorage.getItem("user_token");
-    if (userToken) this.setState({ user: jwtDecode(userToken)})
+    if (userToken) this.setState({ user: jwtDecode(userToken).user })
     else this.setState({ user: {} })
 
   }

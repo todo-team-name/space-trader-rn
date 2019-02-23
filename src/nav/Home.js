@@ -4,7 +4,8 @@ import {
   Text,
   StyleSheet,
   Animated,
-  Dimensions
+  Dimensions,
+  AsyncStorage
 } from 'react-native'
 
 import { connect } from 'react-redux'
@@ -26,13 +27,13 @@ class Home extends React.Component {
     this.animate()
   }
   logout() {
-    // Auth.signOut()
-    //   .then(() => {
-    //     this.props.dispatchLogout()
-    //   })
-    //   .catch(err => {
-    //     console.log('err: ', err)
-    //   })
+    AsyncStorage.removeItem("user_token")
+      .then(() => {
+        this.props.dispatchLogout()
+      })
+      .catch(err => {
+        console.log('err: ', err)
+      })
   }
   navigate() {
     this.props.navigation.navigate('Route1')

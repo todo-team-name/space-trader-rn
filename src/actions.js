@@ -8,7 +8,9 @@ import {
   SIGN_UP_FAILURE,
 } from './reducers/auth'
 
-// import { Auth } from 'aws-amplify'
+import { AsyncStorage } from "react-native"
+
+import jwtDecode from 'jwt-decode'
 
 function signUp() {
   return {
@@ -30,33 +32,34 @@ function signUpFailure(err) {
   }
 }
 
-export function createUser(username, password, email, phone_number) {
+export function createUser(username, password) {
+  let decodedUser = null;
   return (dispatch) => {
-    // dispatch(signUp())
-    // let phone
-    // const firstTwoDigits = phone_number.substring(0, 2)
-    // if (firstTwoDigits === '+1') {
-    //   phone = phone_number
-    // } else {
-    //   phone = '+1' + phone_number
-    // }
-    // Auth.signUp({
-    //   username,
-    //   password,
-    //   attributes: {
-    //     email,
-    //     phone_number: phone
-    //   }
-    // })
-    // .then(data => {
-    //   console.log('data from signUp: ', data)
-    //   dispatch(signUpSuccess(data))
-    //   dispatch(showSignUpConfirmationModal())
-    // })
-    // .catch(err => {
-    //   console.log('error signing up: ', err)
-    //   dispatch(signUpFailure(err))
-    // });
+    dispatch(signUp())
+    fetch('http://192.168.137.1:4040/api/users/signup', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        username,
+        password
+      }),
+    }).then((response) => {
+      if (response.status == 200) {
+        return response.json()
+      } else {
+        throw new Error("Incorrect username/password")
+      }
+    }).then((parsed) => {
+      decodedUser = jwtDecode(parsed.token).user; // so we can use this in the next then iter
+      return AsyncStorage.setItem("user_token", parsed.token);
+    }).then(() => {
+      dispatch(signUpSuccess(decodedUser))
+    }).catch((err) => {
+      dispatch(signUpFailure(err.message))
+    })
   }
 }
 
@@ -87,17 +90,33 @@ function logInFailure(err) {
 }
 
 export function authenticate(username, password) {
+  let decodedUser = null;
   return (dispatch) => {
     dispatch(logIn())
-    Auth.signIn(username, password)
-      .then(user => {
-        dispatch(logInSuccess(user))
-        dispatch(showSignInConfirmationModal())
-      })
-      .catch(err => {
-        console.log('errror from signIn: ', err)
-        dispatch(logInFailure(err))
-      });
+    fetch('http://192.168.137.1:4040/api/users/login', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        username,
+        password
+      }),
+    }).then((response) => {
+      if (response.status == 200) {
+        return response.json()
+      } else {
+        throw new Error("Incorrect username/password")
+      }
+    }).then((parsed) => {
+      decodedUser = jwtDecode(parsed.token).user; // so we can use this in the next then iter
+      return AsyncStorage.setItem("user_token", parsed.token);
+    }).then(() => {
+      dispatch(logInSuccess(decodedUser))
+    }).catch((err) => {
+      dispatch(logInFailure(err.message))
+    })
   }
 }
 
