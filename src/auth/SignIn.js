@@ -3,12 +3,12 @@ import {
   Text,
   View,
   Image,
+  KeyboardAvoidingView
 } from 'react-native';
 
-// import { Auth } from 'aws-amplify'
 import { connect } from 'react-redux'
 
-import { authenticate, confirmUserLogin } from '../actions'
+import { authenticate } from '../actions'
 import { formStyles as styles } from '../styles';
 
 import Input from '../components/Input'
@@ -18,7 +18,6 @@ class SignIn extends Component {
   state = {
     username: '',
     password: '',
-    accessCode: ''
   }
   
   onChangeText = (key, value) => {
@@ -33,14 +32,13 @@ class SignIn extends Component {
   }
 
   render() {
-    const { fontsLoaded } = this.state
     const { auth: {
       signInErrorMessage,
       isAuthenticating,
       signInError,
     }} = this.props
     return (
-      <View style={styles.container}>
+      <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
         <View style={styles.heading}>
           <Image
             source={require('../assets/shape.png')}
@@ -77,7 +75,7 @@ class SignIn extends Component {
         />      
         <Text style={[styles.errorMessage, signInError && { color: 'black' }]}>Error logging in. Please try again.</Text>
         <Text style={[styles.errorMessage, signInError && { color: 'black' }]}>{signInErrorMessage}</Text>
-      </View>
+      </KeyboardAvoidingView>
     );
   }
 }

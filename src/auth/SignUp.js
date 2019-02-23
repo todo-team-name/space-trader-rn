@@ -6,10 +6,10 @@ import {
 } from 'react-native';
 
 import { formStyles as styles } from '../styles';
+import { KeyboardAvoidingView } from 'react-native';
 
-// import { Auth } from 'aws-amplify'
 import { connect } from 'react-redux'
-import { createUser, confirmUserSignUp } from '../actions'
+import { createUser } from '../actions'
 
 import Input from '../components/Input'
 import Button from '../components/Button'
@@ -17,9 +17,6 @@ import Button from '../components/Button'
 const initialState = {
   username: '',
   password: '',
-  email: '',
-  phone_number: '',
-  authCode: ''
 }
 
 class SignUp extends Component {
@@ -32,16 +29,10 @@ class SignUp extends Component {
   }
 
   signUp() {
-    const { username, password, email, phone_number } = this.state
-    this.props.dispatchCreateUser(username, password, email, phone_number)
+    const { username, password } = this.state
+    this.props.dispatchCreateUser(username, password)
   }
 
-  componentWillReceiveProps(nextProps) {
-    const { auth: { showSignUpConfirmationModal }} = nextProps
-    if (!showSignUpConfirmationModal && this.props.auth.showSignUpConfirmationModal) {
-      this.setState(initialState)
-    }
-  }
 
   render() {
     const { auth: {
@@ -50,7 +41,7 @@ class SignUp extends Component {
       signUpErrorMessage
     }} = this.props
     return (
-      <View style={styles.container}>
+      <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
         <View style={styles.heading}>
           <Image
             source={require('../assets/shape.png')}
@@ -86,7 +77,7 @@ class SignUp extends Component {
         />
         <Text style={[styles.errorMessage, signUpError && { color: 'black' }]}>Error logging in. Please try again.</Text>
         <Text style={[styles.errorMessage, signUpError && { color: 'black' }]}>{signUpErrorMessage}</Text>
-      </View>
+      </KeyboardAvoidingView>
     );
   }
 }

@@ -6,12 +6,16 @@ import { Provider, connect } from 'react-redux'
 import { createStore } from 'redux';
 import reducers from './reducers/index.js';
 
+import jwtDecode from 'jwt-decode';
+
 const store = createStore(reducers);
 
 // import { Auth } from 'aws-amplify'
 
 import Tabs from './auth/Tabs'
 import Nav from './nav/Nav'
+
+import { AsyncStorage } from "react-native"
 
 class App extends React.Component {
   state = {
@@ -21,21 +25,19 @@ class App extends React.Component {
   async componentDidMount() {
 
     StatusBar.setHidden(true)
-    try {
-      // const user = await Auth.currentAuthenticatedUser()
-      this.setState({ user, isLoading: false })
-    } catch (err) {
-      this.setState({ isLoading: false })
-    }
+
+    const userToken = await AsyncStorage.getItem("user_token");
+    if (userToken) this.setState({ user: jwtDecode(userToken), isLoading: false })
+    else this.setState({ isLoading: false })
+
   }
 
   async componentWillReceiveProps(nextProps) {
-    try {
-      // const user = await Auth.currentAuthenticatedUser()
-      this.setState({ user })
-    } catch (err) {
-      this.setState({ user: {} })
-    }
+
+    const userToken = await AsyncStorage.getItem("user_token");
+    if (userToken) this.setState({ user: jwtDecode(userToken)})
+    else this.setState({ user: {} })
+
   }
   render() {
     if (this.state.isLoading) return null
