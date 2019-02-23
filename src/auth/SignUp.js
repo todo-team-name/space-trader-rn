@@ -3,6 +3,7 @@ import {
   Text,
   View,
   Image,
+  Modal,
 } from 'react-native';
 
 import { formStyles as styles } from '../styles';
@@ -12,11 +13,14 @@ import { connect } from 'react-redux'
 import { createUser } from '../actions'
 
 import Input from '../components/Input'
+import SkillPicker from '../components/SkillPicker'
+
 import Button from '../components/Button'
 
 const initialState = {
   username: '',
   password: '',
+  modalVisible: false
 }
 
 class SignUp extends Component {
@@ -28,9 +32,14 @@ class SignUp extends Component {
     })
   }
 
+  setModalVisible(visible) {
+    this.setState({modalVisible: visible});
+  }
+
   signUp() {
-    const { username, password } = this.state
-    this.props.dispatchCreateUser(username, password)
+    this.setModalVisible(true)
+    // const { username, password } = this.state
+    // this.props.dispatchCreateUser(username, password)
   }
 
 
@@ -42,6 +51,21 @@ class SignUp extends Component {
     }} = this.props
     return (
       <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
+        <Modal
+          animationType="slide"
+          transparent={false}
+          visible={this.state.modalVisible}
+          onRequestClose={() => {
+            Alert.alert('Modal has been closed.');
+          }}>
+          <View style={{
+            flex: 1, 
+            alignItems: 'center',
+            justifyContent: 'center', 
+          }}>
+            <SkillPicker />
+          </View>
+        </Modal>
         <View style={styles.heading}>
           <Image
             source={require('../assets/shape.png')}
