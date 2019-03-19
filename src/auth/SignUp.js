@@ -14,7 +14,6 @@ import { createUser } from '../actions'
 
 import Input from '../components/Input'
 import SkillPicker from '../components/SkillPicker'
-
 import Button from '../components/Button'
 
 const initialState = {
@@ -36,10 +35,15 @@ class SignUp extends Component {
     this.setState({modalVisible: visible});
   }
 
-  signUp() {
-    this.setModalVisible(true)
+  completeSkillPicking(userPoints) {
+    this.setModalVisible(false);
+    console.log(userPoints);
     // const { username, password } = this.state
     // this.props.dispatchCreateUser(username, password)
+  }
+
+  startSkillPicking() {
+    this.setModalVisible(true);
   }
 
 
@@ -58,13 +62,7 @@ class SignUp extends Component {
           onRequestClose={() => {
             Alert.alert('Modal has been closed.');
           }}>
-          <View style={{
-            flex: 1, 
-            alignItems: 'center',
-            justifyContent: 'center', 
-          }}>
-            <SkillPicker />
-          </View>
+            <SkillPicker completeSkillPicking={this.completeSkillPicking.bind(this)}/>
         </Modal>
         <View style={styles.heading}>
           <Image
@@ -96,7 +94,7 @@ class SignUp extends Component {
         </View>
         <Button
           title='Sign Up'
-          onPress={this.signUp.bind(this)}
+          onPress={this.startSkillPicking.bind(this)}
           isLoading={isAuthenticating}
         />
         <Text style={[styles.errorMessage, signUpError && { color: 'black' }]}>Error logging in. Please try again.</Text>

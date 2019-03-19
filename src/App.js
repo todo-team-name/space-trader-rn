@@ -24,7 +24,6 @@ class App extends React.Component {
   async componentDidMount() {
 
     StatusBar.setHidden(true)
-
     const userToken = await AsyncStorage.getItem("user_token");
     if (userToken) this.setState({ user: jwtDecode(userToken).user, isLoading: false })
     else this.setState({ isLoading: false })
