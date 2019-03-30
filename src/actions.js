@@ -11,7 +11,7 @@ import {
 import { AsyncStorage } from "react-native"
 
 import jwtDecode from 'jwt-decode'
-import generateGameInfo from './utils/helpers'
+import generateGameInfo from './utils/GameInfo'
 
 function signUp() {
   return {
