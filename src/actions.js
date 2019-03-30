@@ -11,6 +11,7 @@ import {
 import { AsyncStorage } from "react-native"
 
 import jwtDecode from 'jwt-decode'
+import generateGameInfo from './utils/helpers'
 
 function signUp() {
   return {
@@ -32,7 +33,7 @@ function signUpFailure(err) {
   }
 }
 
-export function createUser(username, password) {
+export function createUser(username, password, points, difficulty) {
   let decodedUser = null;
   return (dispatch) => {
     dispatch(signUp())
@@ -44,7 +45,10 @@ export function createUser(username, password) {
       },
       body: JSON.stringify({
         username,
-        password
+        password,
+        points,
+        difficulty,
+        game_info_react: generateGameInfo(10)
       }),
     }).then((response) => {
       if (response.status == 200) {
@@ -53,7 +57,7 @@ export function createUser(username, password) {
         throw new Error("Incorrect username/password")
       }
     }).then((parsed) => {
-      decodedUser = jwtDecode(parsed.token).user; // so we can use this in the next then iter
+      decodedUser = jwtDecode(parsed.token); // so we can use this in the next then iter
       return AsyncStorage.setItem("user_token", parsed.token);
     }).then(() => {
       dispatch(signUpSuccess(decodedUser))
@@ -75,7 +79,7 @@ export function logOut() {
   }
 }
 
-function logInSuccess(user) {
+export function logInSuccess(user) {
   return {
     type: LOG_IN_SUCCESS,
     user: user
@@ -110,7 +114,7 @@ export function authenticate(username, password) {
         throw new Error("Incorrect username/password")
       }
     }).then((parsed) => {
-      decodedUser = jwtDecode(parsed.token).user; // so we can use this in the next then iter
+      decodedUser = jwtDecode(parsed.token); // so we can use this in the next then iter
       return AsyncStorage.setItem("user_token", parsed.token);
     }).then(() => {
       dispatch(logInSuccess(decodedUser))

@@ -12,34 +12,36 @@ import jwtDecode from 'jwt-decode';
 import Tabs from './auth/Tabs'
 import Nav from './nav/Nav'
 
+import { logInSuccess } from './actions'
 import { AsyncStorage } from "react-native"
 
 const store = createStore(rootReducer, applyMiddleware(thunk))
 
 class App extends React.Component {
-  state = {
-    user: {},
-    isLoading: true
-  }
   async componentDidMount() {
 
     StatusBar.setHidden(true)
     const userToken = await AsyncStorage.getItem("user_token");
-    if (userToken) this.setState({ user: jwtDecode(userToken).user, isLoading: false })
-    else this.setState({ isLoading: false })
 
+    if (userToken) {
+      store.dispatch(logInSuccess(jwtDecode(userToken)))
+    } 
   }
 
   async componentWillReceiveProps(nextProps) {
     const userToken = await AsyncStorage.getItem("user_token");
-    if (userToken) this.setState({ user: jwtDecode(userToken).user })
-    else this.setState({ user: {} })
-
+    if (userToken) {
+      store.dispatch(logInSuccess(jwtDecode(userToken)))
+    } 
   }
   render() {
-    if (this.state.isLoading) return null
+    if (this.props.auth.isAuthenticating) {
+      return null
+    }
+
     let loggedIn = false
-    if (this.state.user.username) {
+    if (this.props.auth.user.username) {
+      console.log(this.props)
       loggedIn = true
     }
     if (loggedIn) {

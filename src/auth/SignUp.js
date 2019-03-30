@@ -16,6 +16,8 @@ import Input from '../components/Input'
 import SkillPicker from '../components/SkillPicker'
 import Button from '../components/Button'
 
+// import console = require('console');
+
 const initialState = {
   username: '',
   password: '',
@@ -35,11 +37,18 @@ class SignUp extends Component {
     this.setState({modalVisible: visible});
   }
 
-  completeSkillPicking(userPoints) {
+  completeSkillPicking(skillPickerState) {
     this.setModalVisible(false);
-    console.log(userPoints);
-    // const { username, password } = this.state
-    // this.props.dispatchCreateUser(username, password)
+    const { username, password } = this.state
+    console.log(username, password)
+    const points = {
+      fighter: skillPickerState.fighterSkill,
+      trader: skillPickerState.traderSkill,
+      engineer: skillPickerState.engineerSkill,
+      pilot: skillPickerState.pilotSkill
+    }
+    const difficulty = skillPickerState.difficulty
+    this.props.dispatchCreateUser(username, password, points, difficulty)
   }
 
   startSkillPicking() {
@@ -109,7 +118,7 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = {
-  dispatchCreateUser: (username, password) => createUser(username, password)
+  dispatchCreateUser: (username, password, points, difficulty) => createUser(username, password, points, difficulty)
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(SignUp)

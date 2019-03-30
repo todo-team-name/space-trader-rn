@@ -14,7 +14,6 @@ import { connect } from 'react-redux'
 import { logOut } from '../actions'
 import { colors, fonts } from '../theme'
 const { width, height } = Dimensions.get('window')
-import { Button } from 'react-native';
 
 class Home extends React.Component {
   state = {
@@ -26,19 +25,14 @@ class Home extends React.Component {
         this.props.dispatchLogout()
       })
       .catch(err => {
-        console.log('logout err: ', err)
+        console.log('err: ', err)
       })
   }
   render() {
     return (
       <View style={styles.container}>
         <View style={styles.homeContainer}>
-          <Text style={styles.welcome}>Welcome {this.props.auth.user.username}</Text>
-          <Button
-            onPress={this.logout.bind(this)}
-            title="Log Out"
-            color="#841584"
-          />        
+          <Text style={styles.welcome}>Marketplace</Text>
         </View>
       </View>
     )
