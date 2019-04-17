@@ -73,6 +73,7 @@ export default (state = initialState, action) => {
             ...state.user.game_info_react,
             x: action.x,
             y: action.y,
+            drought: Math.random() >= 0.5,
             cargoHold: {
               ...state.user.game_info_react.cargoHold,
               fuel: state.user.game_info_react.cargoHold.fuel - 1

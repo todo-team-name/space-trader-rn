@@ -8,6 +8,8 @@ import {
   AsyncStorage
 } from 'react-native'
 
+import { Button } from 'react-native';
+
 import { connect } from 'react-redux'
 // import { Auth } from 'aws-amplify'
 
@@ -17,12 +19,34 @@ const Marketplace = require('../utils/Marketplace')
 const { width, height } = Dimensions.get('window')
 
 class Home extends React.Component {
+  
   render() {
-    const market = new Marketplace(5, false);
+    const game_info = this.props.auth.user.game_info_react;
+    const market = new Marketplace(5, game_info.drought);
     return (
       <View style={styles.container}>
         <View style={styles.homeContainer}>
-          <Text style={styles.welcome}>Marketplace</Text>
+          <Text>Credits: {game_info.credits}</Text>
+          <Text>Marketplace (click to buy)</Text>
+          {
+            Object.keys(market.availibleItems).map((item, idx) => 
+              <Button
+                onPress={() => {}}
+                title={item + " " + market.availibleItems[item]}
+                color="#841584"
+                disabled={game_info.credits < market.availibleItems[item]}
+                key={idx}
+              />
+            )
+          }
+
+          <Text>Cargo Hold (click to sell):</Text>
+          {
+            Object.keys(game_info.cargoHold).map((elem, idx) => 
+              <Text key={idx}>{elem}: {game_info.cargoHold[elem]}</Text>
+            )
+
+          }
         </View>
       </View>
     )

@@ -51,6 +51,7 @@ class Home extends React.Component {
         <View style={styles.homeContainer}>
           <Text style={styles.welcome}>Welcome {this.props.auth.user.username}</Text>
           <Text>You are at planet {currPlanet.systemName} ({game_info.x}, {game_info.y}) with {game_info.cargoHold.fuel} fuel</Text>
+          <Text>Drought Status: {(!!game_info.drought).toString()}</Text>
           <Text>{currPlanet.resourceType} with TechLevel # {currPlanet.techLevel}</Text>
           <Button
             onPress={this.logout.bind(this)}
