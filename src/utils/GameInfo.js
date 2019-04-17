@@ -156,6 +156,10 @@ function generateGameInfo (numSystems) {
   let usedCoordinates = new Set();
   let x = getRandomInt(0, 151)
   let y = getRandomInt(0, 101)
+  const credits = 500;
+  const cargoHold = {
+    fuel: 10
+  }
   for (var i = 0; i < numSystems; i++) {
     while (usedCoordinates.has(x + " " + y)) {
       x = getRandomInt(0, 151)
@@ -171,7 +175,7 @@ function generateGameInfo (numSystems) {
     }
   }
 
-  return { x, y, solarSystems }
+  return { x, y, solarSystems, credits, cargoHold }
 }
 
 export default generateGameInfo

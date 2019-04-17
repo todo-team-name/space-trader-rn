@@ -6,7 +6,7 @@ export const LOG_OUT = 'LOG_OUT'
 export const SIGN_UP = 'SIGN_UP'
 export const SIGN_UP_SUCCESS = 'SIGN_UP_SUCCESS'
 export const SIGN_UP_FAILURE = 'SIGN_UP_FAILURE'
-
+export const TRAVEL = "TRAVEL"
 
 const initialState = {
   isAuthenticating: false,
@@ -14,6 +14,7 @@ const initialState = {
 
   signUpError: false,
   signInError: false,
+  token: null,
 
   signInErrorMessage: '',
   signUpErrorMessage: '',
@@ -21,7 +22,6 @@ const initialState = {
 }
 
 export default (state = initialState, action) => {
-  console.log(action)
   switch(action.type) {
     case SIGN_UP:
       return {
@@ -50,6 +50,7 @@ export default (state = initialState, action) => {
       return {
         isAuthenticating: false,
         user: action.user,
+        token: action.token
       }
     case LOG_IN_FAILURE:
       return {
@@ -61,6 +62,23 @@ export default (state = initialState, action) => {
     case LOG_OUT:
       return {
         ...initialState,
+      }
+
+    case TRAVEL:
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          game_info_react: {
+            ...state.user.game_info_react,
+            x: action.x,
+            y: action.y,
+            cargoHold: {
+              ...state.user.game_info_react.cargoHold,
+              fuel: state.user.game_info_react.cargoHold.fuel - 1
+            } 
+          }
+        }
       }
     default:
       return state

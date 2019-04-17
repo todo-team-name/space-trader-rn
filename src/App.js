@@ -22,15 +22,14 @@ class App extends React.Component {
 
     StatusBar.setHidden(true)
     const userToken = await AsyncStorage.getItem("user_token");
-
-    if (userToken) {
+    if (userToken && !this.props.auth.user) {
       store.dispatch(logInSuccess(jwtDecode(userToken)))
     } 
   }
 
   async componentWillReceiveProps(nextProps) {
     const userToken = await AsyncStorage.getItem("user_token");
-    if (userToken) {
+    if (userToken && !this.props.auth.user) {
       store.dispatch(logInSuccess(jwtDecode(userToken)))
     } 
   }

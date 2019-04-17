@@ -1,10 +1,9 @@
 const getRandomInt = require('./utils.js').getRandomInt
 
 class Marketplace {
-  constructor(techLevel) {
-
+  constructor(techLevel, drought) {
     this.items = {
-      "Water": [30, 3, 4, 0],
+      "Water": [drought ? 100 : 30, 3, 4, 0],
       "Furs": [250, 10, 10, 0],
       "Food": [100, 5, 5, 1],
       "Ore": [350, 20, 10, 2],

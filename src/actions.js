@@ -6,6 +6,7 @@ import {
   SIGN_UP,
   SIGN_UP_SUCCESS,
   SIGN_UP_FAILURE,
+  TRAVEL,
 } from './reducers/auth'
 
 import { AsyncStorage } from "react-native"
@@ -67,6 +68,14 @@ export function createUser(username, password, points, difficulty) {
   }
 }
 
+export function travel(x, y) {
+  return {
+    type: TRAVEL,
+    x,
+    y
+  }
+}
+
 function logIn() {
   return {
     type: LOG_IN
@@ -79,10 +88,11 @@ export function logOut() {
   }
 }
 
-export function logInSuccess(user) {
+export function logInSuccess(user, token) {
   return {
     type: LOG_IN_SUCCESS,
-    user: user
+    user,
+    token
   }
 }
 
@@ -95,6 +105,7 @@ function logInFailure(err) {
 
 export function authenticate(username, password) {
   let decodedUser = null;
+  let token = null;
   return (dispatch) => {
     dispatch(logIn())
     fetch('http://192.168.137.1:4040/api/users/login', {
@@ -115,10 +126,24 @@ export function authenticate(username, password) {
       }
     }).then((parsed) => {
       decodedUser = jwtDecode(parsed.token); // so we can use this in the next then iter
+      token = parsed.token;
       return AsyncStorage.setItem("user_token", parsed.token);
     }).then(() => {
-      dispatch(logInSuccess(decodedUser))
-    }).catch((err) => {
+      console.log("yeet")
+      return fetch('http://192.168.137.1:4040/api/users/update', {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          'authorization': 'Bearer ' + token
+        },
+        body: JSON.stringify({}),
+      }).then((response) => response.json())
+    }).then((parsed) => {
+      dispatch(logInSuccess(parsed, token))
+    })
+    .catch((err) => {
+      debugger;
       dispatch(logInFailure(err.message))
     })
   }

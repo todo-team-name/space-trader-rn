@@ -11,7 +11,7 @@ import {
 import { connect } from 'react-redux'
 // import { Auth } from 'aws-amplify'
 
-import { logOut } from '../actions'
+import { logOut, travel } from '../actions'
 import { colors, fonts } from '../theme'
 const { width, height } = Dimensions.get('window')
 import { Button } from 'react-native';
@@ -29,16 +29,38 @@ class Home extends React.Component {
         console.log('logout err: ', err)
       })
   }
+  
   render() {
+    const game_info = this.props.auth.user.game_info_react;
+    const locationHash = game_info.solarSystems;
+    const currPlanet = locationHash[game_info.x][game_info.y];
+    const systems = []; 
+    for (const x in locationHash) {
+      for (const y in locationHash[x]) {
+        systems.push(<Button
+          onPress={() => this.props.dispatchTravel(x, y)}
+          title={locationHash[x][y].systemName}
+          color="#841584"
+          disabled={x == game_info.x && y == game_info.y || game_info.cargoHold.fuel == 0}
+          key={x + " " + y}
+        />)
+      }
+    }
     return (
       <View style={styles.container}>
         <View style={styles.homeContainer}>
           <Text style={styles.welcome}>Welcome {this.props.auth.user.username}</Text>
+          <Text>You are at planet {currPlanet.systemName} ({game_info.x}, {game_info.y}) with {game_info.cargoHold.fuel} fuel</Text>
+          <Text>{currPlanet.resourceType} with TechLevel # {currPlanet.techLevel}</Text>
           <Button
             onPress={this.logout.bind(this)}
             title="Log Out"
             color="#841584"
-          />        
+          />       
+          <Text style={styles.welcome}>Travel to: </Text>
+          {
+            systems
+          }
         </View>
       </View>
     )
@@ -77,7 +99,8 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = {
-  dispatchLogout: () => logOut()
+  dispatchLogout: () => logOut(),
+  dispatchTravel: (x, y) => travel(x, y)
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home)

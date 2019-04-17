@@ -13,22 +13,12 @@ import { connect } from 'react-redux'
 
 import { logOut } from '../actions'
 import { colors, fonts } from '../theme'
+const Marketplace = require('../utils/Marketplace') 
 const { width, height } = Dimensions.get('window')
 
 class Home extends React.Component {
-  state = {
-    username: ''
-  }
-  logout() {
-    AsyncStorage.removeItem("user_token")
-      .then(() => {
-        this.props.dispatchLogout()
-      })
-      .catch(err => {
-        console.log('err: ', err)
-      })
-  }
   render() {
+    const market = new Marketplace(5, false);
     return (
       <View style={styles.container}>
         <View style={styles.homeContainer}>
