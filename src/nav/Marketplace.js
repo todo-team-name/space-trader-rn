@@ -13,7 +13,7 @@ import { Button } from 'react-native';
 import { connect } from 'react-redux'
 // import { Auth } from 'aws-amplify'
 
-import { logOut } from '../actions'
+import { logOut, buy, sell } from '../actions'
 import { colors, fonts } from '../theme'
 const Marketplace = require('../utils/Marketplace') 
 const { width, height } = Dimensions.get('window')
@@ -31,7 +31,7 @@ class Home extends React.Component {
           {
             Object.keys(market.availibleItems).map((item, idx) => 
               <Button
-                onPress={() => {}}
+                onPress={() => {this.props.dispatchBuy(item, market.availibleItems[item])}}
                 title={item + " " + market.availibleItems[item]}
                 color="#841584"
                 disabled={game_info.credits < market.availibleItems[item]}
@@ -43,7 +43,13 @@ class Home extends React.Component {
           <Text>Cargo Hold (click to sell):</Text>
           {
             Object.keys(game_info.cargoHold).map((elem, idx) => 
-              <Text key={idx}>{elem}: {game_info.cargoHold[elem]}</Text>
+              <Button
+                onPress={() => {this.props.dispatchSell(elem, market.availibleItems[elem])}}
+                title={elem + ": " + game_info.cargoHold[elem]}
+                color="#841584"
+                disabled={game_info.cargoHold[elem] <= 0 || !market.availibleItems[elem]}
+                key={idx}
+              />
             )
 
           }
@@ -85,7 +91,9 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = {
-  dispatchLogout: () => logOut()
+  dispatchLogout: () => logOut(),
+  dispatchBuy: (item, credits) => buy(item, credits),
+  dispatchSell: (item, credits) => sell(item, credits)
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home)

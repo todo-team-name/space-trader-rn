@@ -1,3 +1,4 @@
+
 export const LOG_IN = 'LOG_IN'
 export const LOG_IN_SUCCESS = 'LOG_IN_SUCCESS'
 export const LOG_IN_FAILURE = 'LOG_IN_FAILURE'
@@ -7,6 +8,9 @@ export const SIGN_UP = 'SIGN_UP'
 export const SIGN_UP_SUCCESS = 'SIGN_UP_SUCCESS'
 export const SIGN_UP_FAILURE = 'SIGN_UP_FAILURE'
 export const TRAVEL = "TRAVEL"
+export const BUY_ITEM = "BUY_ITEM"
+export const SELL_ITEM = "SELL_ITEM"
+
 
 const initialState = {
   isAuthenticating: false,
@@ -81,6 +85,41 @@ export default (state = initialState, action) => {
           }
         }
       }
+    
+    case BUY_ITEM:
+      const newStock = state.user.game_info_react.cargoHold[action.item] ? 
+                        state.user.game_info_react.cargoHold[action.item] + 1 : 1;
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          game_info_react: {
+            ...state.user.game_info_react,
+            credits: state.user.game_info_react.credits - parseFloat(action.credits),
+            cargoHold: {
+              ...state.user.game_info_react.cargoHold,
+              [action.item]: newStock
+            } 
+          }
+        }
+      }
+
+    case SELL_ITEM:
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          game_info_react: {
+            ...state.user.game_info_react,
+            credits: state.user.game_info_react.credits + parseFloat(action.credits),
+            cargoHold: {
+              ...state.user.game_info_react.cargoHold,
+              [action.item]: state.user.game_info_react.cargoHold[action.item] - 1
+            } 
+          }
+        }
+      }
+
     default:
       return state
   }

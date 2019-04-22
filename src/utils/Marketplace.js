@@ -40,7 +40,7 @@ class Marketplace {
     scaledValue = scaledValue * 100;
     scaledValue = Math.round(scaledValue);
     scaledValue = scaledValue / 100;
-    return scaledValue.toFixed(2);
+    return Math.abs(scaledValue.toFixed(2));
   }
 }
 

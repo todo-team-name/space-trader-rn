@@ -7,6 +7,8 @@ import {
   SIGN_UP_SUCCESS,
   SIGN_UP_FAILURE,
   TRAVEL,
+  SELL_ITEM,
+  BUY_ITEM
 } from './reducers/auth'
 
 import { AsyncStorage } from "react-native"
@@ -31,6 +33,22 @@ function signUpFailure(err) {
   return {
     type: SIGN_UP_FAILURE,
     error: err
+  }
+}
+
+export function buy(item, credits) {
+  return {
+    type: BUY_ITEM,
+    item,
+    credits
+  }
+}
+
+export function sell(item, credits) {
+  return {
+    type: SELL_ITEM,
+    item,
+    credits
   }
 }
 

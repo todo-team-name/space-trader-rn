@@ -22,17 +22,52 @@ class App extends React.Component {
 
     StatusBar.setHidden(true)
     const userToken = await AsyncStorage.getItem("user_token");
-    if (userToken && !this.props.auth.user) {
-      store.dispatch(logInSuccess(jwtDecode(userToken)))
+    if (userToken && !this.props.auth.user.username) {
+      fetch('http://192.168.137.1:4040/api/users/update', {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          'authorization': 'Bearer ' + userToken
+        },
+        body: JSON.stringify({}),
+      }).then((response) => response.json())
+      .then((parsed) => {
+        store.dispatch(logInSuccess(parsed, userToken))
+      })
     } 
   }
 
   async componentWillReceiveProps(nextProps) {
     const userToken = await AsyncStorage.getItem("user_token");
-    if (userToken && !this.props.auth.user) {
-      store.dispatch(logInSuccess(jwtDecode(userToken)))
-    } 
+    if (userToken && !this.props.auth.user.username) {
+      fetch('http://192.168.137.1:4040/api/users/update', {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          'authorization': 'Bearer ' + userToken
+        },
+        body: JSON.stringify({}),
+      }).then((response) => response.json())
+      .then((parsed) => {
+        store.dispatch(logInSuccess(parsed, userToken))
+      })
+    } else if (this.props.auth.user && this.props.auth.user.game_info_react ) {
+      fetch('http://192.168.137.1:4040/api/users/update', {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          'authorization': 'Bearer ' + userToken
+        },
+        body: JSON.stringify({
+          game_info_react: this.props.auth.user.game_info_react 
+        }),
+      })
+    }
   }
+
   render() {
     if (this.props.auth.isAuthenticating) {
       return null
